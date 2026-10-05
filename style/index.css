@@ -763,6 +763,25 @@ footer .terms p{
 .about .aboutbg .about-content .btn-secondary:hover{
     color: #fff;
 }
+.hero .herobg .hero-content .btn,
+.about .aboutbg .about-content .btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.hero .herobg .hero-content .btn-primary,
+.hero .herobg .hero-content .btn-secondary,
+.about .aboutbg .about-content .btn-primary,
+.about .aboutbg .about-content .btn-secondary{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    margin: 0;
+    vertical-align: middle;
+}
 .about .about-section{
     padding: 50px 5%;
     background: #f9f9f9;
@@ -3820,7 +3839,11 @@ footer .text-icon p{
         color: #ff3c00;
     }
     .mobile-menu > .btn-primary{
+        display: flex;
+        align-items: center;
+        justify-content: center;
         min-height: 48px;
+        padding: 12px 20px;
         border: 0;
         border-radius: 4px;
         background: #ff3c00;
