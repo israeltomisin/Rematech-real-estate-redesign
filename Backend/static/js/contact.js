@@ -43,11 +43,15 @@ contactForm.addEventListener("submit", async (e) => {
   contactStatus.textContent = "Sending...";
   contactStatus.dataset.status = "sending";
 
+  const requestController = new AbortController();
+  const requestTimeout = setTimeout(() => requestController.abort(), 30000);
+
   try {
     const response = await fetch(backendURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, subject, message }),
+      signal: requestController.signal,
     });
 
     if (!response.ok) {
@@ -62,9 +66,12 @@ contactForm.addEventListener("submit", async (e) => {
     contactForm.reset();
   } catch (error) {
     console.error("Error sending message:", error);
-    contactStatus.textContent = "Couldn't send your message. Please try again.";
+    contactStatus.textContent = requestController.signal.aborted
+      ? "This is taking longer than expected. We couldn't confirm delivery. Please try again."
+      : "Couldn't send your message. Please try again.";
     contactStatus.dataset.status = "error";
   } finally {
+    clearTimeout(requestTimeout);
     submitButton.disabled = false;
   }
 });

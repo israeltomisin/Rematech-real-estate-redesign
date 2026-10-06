@@ -10,6 +10,19 @@ dotenv.config({ path: fileURLToPath(new URL("./.env", import.meta.url)), quiet: 
 const app = express();
 const router = express.Router()
 const PORT = process.env.PORT || 5000;
+const emailTransporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  pool: true,
+  maxConnections: 2,
+  maxMessages: 100,
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 20000,
+});
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
@@ -25,20 +38,14 @@ router.post('/send-email', async (req, res) => {
   if (![name, email, message].every((value) => typeof value === 'string' && value.trim())) {
     return res.status(400).json({ error: 'Name, email, and message are required' });
   }
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    return res.status(503).json({ error: 'Email delivery is not configured' });
+  }
   const trimmedName = name.trim();
   const trimmedEmail = email.trim();
   const selectedSubject = typeof subject === 'string' && subject.trim()
     ? subject.trim()
     : `Contact message from ${trimmedName}`;
-
-  // Setup transporter
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
 
   const mailOptions = {
     from: { name: trimmedName, address: process.env.EMAIL_USER },
@@ -55,7 +62,7 @@ router.post('/send-email', async (req, res) => {
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
+    const info = await emailTransporter.sendMail(mailOptions);
     console.log('Email sent:', info.response);
     res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
@@ -81,6 +88,9 @@ router.post('/property-enquiry', async (req, res) => {
   if (!looking_to.trim()) {
     return res.status(400).json({ error: 'Please tell us what you are looking for' });
   }
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    return res.status(503).json({ error: 'Email delivery is not configured' });
+  }
 
   const propertyDetails = [
     ['Looking to', looking_to],
@@ -95,15 +105,7 @@ router.post('/property-enquiry', async (req, res) => {
     .join('\n');
 
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    const info = await transporter.sendMail({
+    const info = await emailTransporter.sendMail({
       from: { name: 'Rematech Property Enquiry', address: process.env.EMAIL_USER },
       to: 'israeltomisin001@gmail.com',
       subject: `Property enquiry: ${looking_to.trim()}`,

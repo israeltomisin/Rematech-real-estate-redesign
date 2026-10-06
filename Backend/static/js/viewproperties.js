@@ -23,11 +23,15 @@ if (propertyBriefForm && propertyBriefStatus && propertyBriefSubmitButton) {
     propertyBriefStatus.textContent = "Sending your property brief...";
     propertyBriefStatus.dataset.status = "sending";
 
+    const requestController = new AbortController();
+    const requestTimeout = setTimeout(() => requestController.abort(), 30000);
+
     try {
       const response = await fetch(propertyBriefForm.action, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        signal: requestController.signal,
       });
 
       if (!response.ok) {
@@ -42,9 +46,12 @@ if (propertyBriefForm && propertyBriefStatus && propertyBriefSubmitButton) {
       propertyBriefForm.reset();
     } catch (error) {
       console.error("Error sending property enquiry:", error);
-      propertyBriefStatus.textContent = "Couldn't send your property brief. Please try again.";
+      propertyBriefStatus.textContent = requestController.signal.aborted
+        ? "This is taking longer than expected. We couldn't confirm delivery. Please try again."
+        : "Couldn't send your property brief. Please try again.";
       propertyBriefStatus.dataset.status = "error";
     } finally {
+      clearTimeout(requestTimeout);
       propertyBriefSubmitButton.disabled = false;
     }
   });
