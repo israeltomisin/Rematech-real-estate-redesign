@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import nodemailer from "nodemailer";
 import { fileURLToPath } from "node:url";
 
-dotenv.config({ path: fileURLToPath(new URL("./.env", import.meta.url)) });
+dotenv.config({ path: fileURLToPath(new URL("./.env", import.meta.url)), quiet: true });
 // Create an instance of Express
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -13,6 +13,10 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
 
 app.post('/send-email', async (req, res) => {
   const { name, email, subject, message } = req.body || {};
