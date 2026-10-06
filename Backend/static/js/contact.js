@@ -36,9 +36,10 @@ contactForm.addEventListener("submit", async (e) => {
   const email = String(formData.get("email") || "").trim();
   const subject = String(formData.get("service") || "").trim();
   const message = String(formData.get("message") || "").trim();
-  const backendURL = "http://localhost:8000/send-email";
+  const backendURL = "/api/send-email";
 
   submitButton.disabled = true;
+  contactStatus.hidden = false;
   contactStatus.textContent = "Sending...";
   contactStatus.dataset.status = "sending";
 
@@ -48,9 +49,11 @@ contactForm.addEventListener("submit", async (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, subject, message }),
     });
-    const result = await response.json();
 
     if (!response.ok) {
+      const result = response.headers.get("content-type")?.includes("application/json")
+        ? await response.json()
+        : {};
       throw new Error(result.error || "Failed to send email");
     }
 

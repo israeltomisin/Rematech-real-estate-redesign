@@ -3261,6 +3261,9 @@ header nav ul li a[aria-current="page"]::after {
     color: #687479;
     font: 13px/1.5 "Montserrat", sans-serif;
 }
+.contact-status[hidden]{
+    display: none;
+}
 .contact-status[data-status="success"]{
     color: #237547;
 }

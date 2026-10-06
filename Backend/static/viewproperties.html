@@ -72,7 +72,7 @@
                 <div class="property-brief-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>Submitting an enquiry does not confirm property availability. We’ll discuss current options with you directly.</span></div>
             </div>
 
-            <form class="property-brief-form" action="http://localhost:8000/property-enquiry" method="post">
+            <form class="property-brief-form" action="/api/property-enquiry" method="post">
                 <div class="property-brief-form__heading">
                     <span>LET’S GET TO KNOW YOUR SEARCH</span>
                     <h3>What would you like to find?</h3>
@@ -123,8 +123,8 @@
                     <textarea id="property-requirements" name="propertyRequirements" rows="3" placeholder="Bedrooms, must-haves, questions, or anything else that matters to you"></textarea>
                 </div>
                 <button class="property-search-button property-search-button--primary" type="submit">Send my property brief <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
-                <p class="contact-status" id="property-brief-status" role="status" aria-live="polite"></p>
                 <p class="property-brief-form__privacy"><i class="fa-solid fa-lock" aria-hidden="true"></i> Your property brief will be sent directly to our team. Include your contact details under additional details if you would like us to follow up.</p>
+                <p class="contact-status" id="property-brief-status" role="status" aria-live="polite" hidden></p>
             </form>
         </section>
 
@@ -208,7 +208,7 @@
             </div>
         </div>
     </footer>
-    <script src="../static/js/main.js" defer></script>
-    <script src="../static/js/viewproperties.js" defer></script>
+    <script src="./js/main.js" defer></script>
+    <script src="./js/viewproperties.js" defer></script>
 </body>
 </html>

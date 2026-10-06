@@ -19,6 +19,7 @@ if (propertyBriefForm && propertyBriefStatus && propertyBriefSubmitButton) {
     };
 
     propertyBriefSubmitButton.disabled = true;
+    propertyBriefStatus.hidden = false;
     propertyBriefStatus.textContent = "Sending your property brief...";
     propertyBriefStatus.dataset.status = "sending";
 
@@ -28,9 +29,11 @@ if (propertyBriefForm && propertyBriefStatus && propertyBriefSubmitButton) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const result = await response.json();
 
       if (!response.ok) {
+        const result = response.headers.get("content-type")?.includes("application/json")
+          ? await response.json()
+          : {};
         throw new Error(result.error || "Failed to send property enquiry");
       }
 
