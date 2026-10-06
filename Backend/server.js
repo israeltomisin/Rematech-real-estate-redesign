@@ -14,9 +14,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-  res.send('Server is running');
-});
+
 
 app.post('/send-email', async (req, res) => {
   const { name, email, subject, message } = req.body || {};
@@ -116,6 +114,8 @@ app.post('/property-enquiry', async (req, res) => {
     res.status(500).json({ error: 'Failed to send property enquiry' });
   }
 });
+
+app.use("/", express.static("static"));
 
 // Start the server
 app.listen(PORT, "0.0.0.0", () => {
