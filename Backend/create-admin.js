@@ -14,13 +14,13 @@ if (!username || !password) {
   try {
     const passwordHash = await bcrypt.hash(password, 12);
 
-    await db.execute(
+    await db.query(
       `INSERT INTO admin_users (username, password_hash)
-       VALUES (?, ?)
-       ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash)`,
+      VALUES ($1, $2)
+      ON CONFLICT (username)
+      DO UPDATE SET password_hash = EXCLUDED.password_hash`,
       [username, passwordHash]
     );
-
     console.log(`Admin account "${username}" created or updated.`);
   } catch (error) {
     console.error("Could not create admin:", error.message);

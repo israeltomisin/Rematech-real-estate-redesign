@@ -13,14 +13,17 @@ loginForm.addEventListener("submit", async (event) => {
   loginMessage.textContent = "";
 
   try {
-    const response = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "same-origin",
-      body: JSON.stringify({ username, password }),
-    });
+    const response = await fetch(
+      `${REMATECH_API_BASE}/api/admin/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      }
+    );
 
     const result = await response.json();
 

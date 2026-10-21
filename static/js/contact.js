@@ -36,7 +36,8 @@ contactForm.addEventListener("submit", async (e) => {
   const email = String(formData.get("email") || "").trim();
   const subject = String(formData.get("service") || "").trim();
   const message = String(formData.get("message") || "").trim();
-  const backendURL = "/api/send-email";
+  const backendURL =
+  "https://rematech-real-estate-redesign-2.onrender.com/api/send-email";
 
   submitButton.disabled = true;
   contactStatus.hidden = false;

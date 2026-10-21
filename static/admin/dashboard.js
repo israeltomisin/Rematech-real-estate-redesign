@@ -18,8 +18,8 @@ let editingPropertyId = null;
 
 async function checkAdminSession() {
   try {
-    const response = await fetch("/api/admin/me", {
-      credentials: "same-origin",
+    const response = await fetch(`${REMATECH_API_BASE}/api/admin/me`, {
+      credentials: "include",
     });
 
     if (!response.ok) {

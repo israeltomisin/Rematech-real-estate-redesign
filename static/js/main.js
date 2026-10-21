@@ -1,4 +1,4 @@
-const VIEWPROPERTY_API_BASE = "http://localhost:8000";
+const VIEWPROPERTY_API_BASE = "https://rematech-real-estate-redesign-2.onrender.com";
 const menuButton = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
 const closeButton = document.getElementById('closeBtn');
@@ -37,7 +37,7 @@ if (menuButton && mobileMenu && closeButton) {
 /* SHARED REMATECH API CONFIGURATION */
 
 // Local testing
-const REMATECH_API_BASE = "http://localhost:8000";
+const REMATECH_API_BASE = "https://rematech-real-estate-redesign-2.onrender.com";
 
 // For deployment, replace the URL above with your deployed backend origin.
 // Example: https://your-backend.onrender.com
