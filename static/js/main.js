@@ -97,16 +97,15 @@ function getSafePropertyImage(value) {
     }
 }
 
+
 async function fetchPropertyList() {
     const response = await fetch(
-        `${VIEWPROPERTY_API_BASE}/api/property-enquiry`,
+        `${REMATECH_API_BASE}/api/properties`,
         {
-            method: "POST",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload),
-            signal: controller.signal
+                "Accept": "application/json"
+            }
         }
     );
 
@@ -118,18 +117,19 @@ async function fetchPropertyList() {
 
     const result = await response.json();
 
-    const list = Array.isArray(result)
+    const properties = Array.isArray(result)
         ? result
         : result?.properties;
 
-    if (!Array.isArray(list)) {
+    if (!Array.isArray(properties)) {
         throw new Error(
             "Unexpected API response: expected a properties array."
         );
     }
 
-    return list;
+    return properties;
 }
+
 
 
 /* HOMEPAGE PROPERTY LISTINGS */
