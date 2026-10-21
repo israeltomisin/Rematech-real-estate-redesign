@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#f5f7f6">
+  <link rel="stylesheet" href="../admin/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Rematech | Property Dashboard</title>
+</head>
+<body class="dashboard-page">
+  <main class="dashboard-container">
+    <header class="dashboard-header">
+      <a class="admin-brand" href="/" aria-label="Rematech home">
+        <span class="admin-brand-mark" aria-hidden="true">R</span>
+        <span class="admin-brand-name">rematech<span>PROPERTY ADMIN</span></span>
+      </a>
+      <div class="dashboard-header-actions">
+        <span class="admin-session-indicator"><span aria-hidden="true"></span> Admin workspace</span>
+        <button id="logoutButton" type="button">
+          <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
+          <span>Log out</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="dashboard-content">
+      <div class="dashboard-welcome">
+        <div class="dashboard-welcome-copy">
+          <p class="dashboard-eyebrow">PROPERTY WORKSPACE</p>
+          <h1>Dashboard overview</h1>
+          <p id="dashboardMessage" role="status" aria-live="polite">Checking your admin session...</p>
+        </div>
+        <div class="dashboard-welcome-art" aria-hidden="true">
+          <i class="fa-solid fa-house-chimney"></i>
+          <span></span>
+        </div>
+      </div>
+
+      <section class="dashboard-card property-management-card" aria-labelledby="managementTitle">
+        <div class="management-copy">
+          <span class="management-icon" aria-hidden="true">
+            <i class="fa-solid fa-building"></i>
+          </span>
+          <div>
+            <h2 id="managementTitle">Manage your properties</h2>
+            <p>Keep your listings up to date and looking their best.</p>
+          </div>
+        </div>
+        <div class="management-actions">
+          <button id="viewPropertiesButton" class="button-secondary" type="button">
+            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+            View properties
+          </button>
+          <button id="addPropertyButton" type="button">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Add property
+          </button>
+        </div>
+      </section>
+
+      <section id="propertyFormSection" class="dashboard-card property-form-card" hidden>
+        <div class="form-card-heading">
+          <div>
+            <p class="dashboard-eyebrow">LISTING DETAILS</p>
+            <h2 id="propertyFormTitle">Add a Property</h2>
+          </div>
+          <span class="form-heading-icon" aria-hidden="true">
+            <i class="fa-regular fa-pen-to-square"></i>
+          </span>
+        </div>
+        <p id="propertyFormMessage" role="status" aria-live="polite"></p>
+
+        <form id="propertyForm">
+          <div class="form-field">
+            <label for="propertyTitle">Property title</label>
+            <input id="propertyTitle" name="title" type="text" maxlength="255" placeholder="e.g. Contemporary family home" required>
+          </div>
+
+          <div class="form-field">
+            <label for="propertyType">Property type</label>
+            <!-- <input id="propertyType" name="property_type" type="text" maxlength="100" placeholder="Apartment, duplex, land..." required> -->
+             <select name="property_type" id="propertyType" required>
+              <option value="">Select a property type</option>
+              <option value="apartment">Apartment</option>
+              <option value="duplex">Duplex</option>
+              <option value="land">Land</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="propertyLocation">Location</label>
+            <!-- <input id="propertyLocation" name="location" type="text" maxlength="255" placeholder="City, neighbourhood" required> -->
+            <input id="propertyLocation" name="location" placeholder="States where the property is located" list="states" type="text" maxlength="255" required>
+              <datalist id="states">
+                <option value="Abia">
+                <option value="Adamawa">
+                <option value="Akwa Ibom">
+                <option value="Anambra">
+                <option value="Bauchi">
+                <option value="Bayelsa">
+                <option value="Benue">
+                <option value="Borno">
+                <option value="Cross River">
+                <option value="Delta">
+                <option value="Ebonyi">
+                <option value="Edo">
+                <option value="Ekiti">
+                <option value="Enugu">
+                <option value="Federal Capital Territory (FCT)">
+                <option value="Gombe">
+                <option value="Imo">
+                <option value="Jigawa">
+                <option value="Kaduna">
+                <option value="Kano">
+                <option value="Katsina">
+                <option value="Kebbi">
+                <option value="Kogi">
+                <option value="Kwara">
+                <option value="Lagos">
+                <option value="Nasarawa">
+                <option value="Niger">
+                <option value="Ogun">
+                <option value="Ondo">
+                <option value="Osun">
+                <option value="Oyo">
+                <option value="Plateau">
+                <option value="Rivers">
+                <option value="Sokoto">
+                <option value="Taraba">
+                <option value="Yobe">
+                <option value="Zamfara">
+              </datalist>
+          </div>
+
+          <div class="form-field">
+            <label for="propertyPrice">Price (₦)</label>
+            <input id="propertyPrice" name="price" type="number" min="0" step="0.01" placeholder="0.00" required>
+          </div>
+
+          <div class="form-field form-field-full">
+            <label for="propertyImage">Image URL <span class="field-optional">Optional</span></label>
+            <input id="propertyImage" name="image_url" type="url" maxlength="500" placeholder="https://example.com/property.jpg">
+          </div>
+
+          <div class="form-field form-field-full">
+            <label for="propertyDescription">Description <span class="field-optional">Optional</span></label>
+            <textarea id="propertyDescription" name="description" rows="5" maxlength="10000" placeholder="Share the details that make this property special..."></textarea>
+          </div>
+
+          <div class="form-field">
+            <label for="propertyStatus">Listing status</label>
+            <select id="propertyStatus" name="status">
+              <option value="available">Available</option>
+              <option value="sold">Sold</option>
+              <option value="rented">Rented</option>
+              <option value="unavailable">Unavailable</option>
+            </select>
+          </div>
+
+          <div class="form-actions form-field-full">
+            <button id="savePropertyButton" type="submit">
+              <i class="fa-solid fa-check" aria-hidden="true"></i>
+              Save property
+            </button>
+            <button id="cancelPropertyButton" class="button-secondary" type="button">Cancel</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="propertiesSection" class="properties-section" aria-labelledby="propertiesTitle" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="dashboard-eyebrow">YOUR PORTFOLIO</p>
+            <h2 id="propertiesTitle">Property listings</h2>
+            <p id="propertiesMessage" role="status" aria-live="polite">Click “View properties” to load properties.</p>
+          </div>
+          <span class="listing-heading-icon" aria-hidden="true">
+            <i class="fa-solid fa-house"></i>
+          </span>
+        </div>
+        <div id="propertiesList"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

@@ -5,10 +5,15 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
     "body-parser": "^2.3.0",
+    "connect-pg-simple": "^10.0.0",
     "cors": "^2.8.6",
-    "dotenv": "^18.0.5",
+    "dotenv": "^18.0.8",
     "express": "^5.2.1",
-    "nodemailer": "^10.0.15"
+    "express-session": "^1.19.0",
+    "nodemailer": "^10.0.15",
+    "pg": "^8.23.1"
   }
 }

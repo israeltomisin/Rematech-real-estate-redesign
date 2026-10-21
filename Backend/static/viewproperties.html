@@ -17,9 +17,9 @@
         </a>
         <nav aria-label="Main navigation">
             <ul>
-                <li><a href="./index.html">Home</a></li>
+                <li><a href="./index.html" aria-current="page">Home</a></li>
                 <li><a href="./About.html">About</a></li>
-                <li><a href="./properties.html" aria-current="page">Properties</a></li>
+                <li><a href="./properties.html">Properties</a></li>
                 <li><a href="./services.html">Services</a></li>
                 <li><a href="./contact.html">Contact</a></li>
             </ul>
@@ -38,9 +38,9 @@
                 <button class="close-btn" id="closeBtn" type="button" aria-label="Close navigation"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
             </div>
             <ul>
-                <li><a href="./index.html">Home</a></li>
+                <li><a href="./index.html" aria-current="page">Home</a></li>
                 <li><a href="./About.html">About</a></li>
-                <li><a href="./properties.html" aria-current="page">Properties</a></li>
+                <li><a href="./properties.html">Properties</a></li>
                 <li><a href="./services.html">Services</a></li>
                 <li><a href="./contact.html">Contact</a></li>
             </ul>
@@ -49,6 +49,61 @@
     </header>
     <!-- Header ends here -->
     <main class="property-search-page">
+        <!-- Selected property details -->
+        <section class="selected-property" id="selectedProperty" hidden>
+            <div class="selected-property__inner">
+                <a href="./properties.html" class="selected-property__back">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to properties
+                </a>
+
+                <p id="propertyLoading" class="selected-property__message">
+                    Loading property details...
+                </p>
+
+                <div id="propertyDetailsContent" hidden>
+                    <div class="selected-property__grid">
+                        <div class="selected-property__image-wrap">
+                            <img id="detailImage" src="" alt="Property image">
+                            <span id="detailStatus" class="selected-property__status"></span>
+                        </div>
+
+                        <div class="selected-property__info">
+                            <span class="property-search-kicker">
+                                PROPERTY DETAILS
+                            </span>
+
+                            <h1 id="detailTitle"></h1>
+
+                            <p class="selected-property__location">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span id="detailLocation"></span>
+                            </p>
+
+                            <p id="detailPrice" class="selected-property__price"></p>
+
+                            <div class="selected-property__facts">
+                                <div>
+                                    <span>Property type</span>
+                                    <strong id="detailType"></strong>
+                                </div>
+                                <div>
+                                    <span>Property ID</span>
+                                    <strong id="detailId"></strong>
+                                </div>
+                            </div>
+
+                            <a href="#property-brief"
+                            id="enquireAboutProperty"
+                            class="property-search-button property-search-button--primary">
+                                Enquire about this property
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <section class="property-search-hero" aria-labelledby="property-search-title">
             <div class="property-search-hero__image" role="img" aria-label="Modern home surrounded by a landscaped garden"></div>
             <div class="property-search-hero__content">

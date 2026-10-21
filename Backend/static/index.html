@@ -16,9 +16,9 @@
         </a>
         <nav aria-label="Main navigation">
             <ul>
-                <li><a href="./index.html">Home</a></li>
+                <li><a href="./index.html" aria-current="page">Home</a></li>
                 <li><a href="./About.html">About</a></li>
-                <li><a href="./properties.html" aria-current="page">Properties</a></li>
+                <li><a href="./properties.html">Properties</a></li>
                 <li><a href="./services.html">Services</a></li>
                 <li><a href="./contact.html">Contact</a></li>
             </ul>
@@ -37,9 +37,9 @@
                 <button class="close-btn" id="closeBtn" type="button" aria-label="Close navigation"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
             </div>
             <ul>
-                <li><a href="./index.html">Home</a></li>
+                <li><a href="./index.html" aria-current="page">Home</a></li>
                 <li><a href="./About.html">About</a></li>
-                <li><a href="./properties.html" aria-current="page">Properties</a></li>
+                <li><a href="./properties.html">Properties</a></li>
                 <li><a href="./services.html">Services</a></li>
                 <li><a href="./contact.html">Contact</a></li>
             </ul>
@@ -59,6 +59,34 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Latest Properties from Admin Dashboard -->
+        <div class="latest-properties" id="latest-properties">
+            <div class="latest-properties-header">
+                <div>
+                    <span class="section-label">OUR PROPERTY COLLECTION</span>
+                    <h2>Latest <span>Properties</span></h2>
+                    <p>
+                        Discover our latest property listings, carefully selected
+                        to help you find your perfect place.
+                    </p>
+                </div>
+
+                <a href="./properties.html" class="view-all-properties">
+                    View All Properties
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <p id="propertiesStatus" class="properties-status" role="status"
+            aria-live="polite">Loading properties...</p>
+
+            <div class="latest-properties-grid" id="latestPropertiesGrid">
+                <!-- Property cards will be rendered here by JavaScript -->
+            </div>
+        </div>
+        <!-- End Latest Properties -->
+
         <div class="featured-section">
             <h5>Find Your Next Property</h5>
             <p>Explore a few of the homes and spaces that inspire us. Contact our team for current listings, availability, and details.</p>
@@ -112,7 +140,6 @@
                     </div>
                 </div>
             </div>
-            <p class="featured-disclaimer">Images are for illustration. Contact Rematech for current property listings and availability.</p>
         </div>
         <div class="why-partner-section" id="why-rematech">
             <div class="why-partner-text">
@@ -152,21 +179,18 @@
                 </div>
             </div>
         </div>
-        <div class="cta-section">
-            <div class="cta-text">
-                <h5>Ready to Find Your <span>Dream Property?</span></h5>
+        <section class="property-cta" aria-labelledby="property-cta-title">
+            <div class="property-cta__content">
+                <h2 id="property-cta-title">Ready to Find Your <span>Dream Property?</span></h2>
                 <p>Whether you're buying, selling, or investing,our experienced team is here to guide you every step of the way.</p>
-                <div class="btn">
-                    <a class="btn-primary" href="./viewproperties.html">Find a property</a>
-                    <a class="btn-secondary" href="./contact.html">Contact Us</a>
-                </div>
+                <a class="property-button property-button--primary" href="./contact.html">Start a conversation <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
             </div>
-        </div>
+        </section>
     </section>
     <footer>
         <div class="footer-flex">
             <div class="footer-left">
-                <a href="./index.html" aria-label="Rematech home"><img src="../static/Images/Logo.png" alt="Rematech"></a>
+                <a href="./index.html" aria-label="Rematech home"><img src="./Images/Logo.png" alt="Rematech"></a>
                 <p>Helping buyers, sellers, and investors discover premium properties with trusted guidance, transparent service, and expert market knowledge.</p>
                 <div class="social-icons">
                     <a href="https://wa.me/2349026744296" aria-label="Chat with Rematech on WhatsApp" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
@@ -238,6 +262,6 @@
         </div>
     </footer>
     <!-- Hero ends here -->
-    <script src="../static/js/main.js" defer></script>
+    <script src="./js/main.js" defer></script>
 </body>
 </html>

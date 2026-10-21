@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start Rematech backend",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"--prefix",
+				"Backend",
+				"start"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

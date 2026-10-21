@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../admin/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Rematech | Your Real Estate Partner</title>
+</head>
+<body>
+    <main class="login-container">
+    <div class="login-card">
+      <h1>Rematech</h1>
+      <p class="subtitle">Admin Dashboard</p>
+
+      <form id="loginForm">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Enter admin username"
+          autocomplete="username"
+          required
+        >
+
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Enter admin password"
+          autocomplete="current-password"
+          required
+        >
+
+        <button type="submit" id="loginButton">Log In</button>
+        <p id="loginMessage" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>
