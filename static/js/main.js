@@ -1,5 +1,5 @@
 const VIEWPROPERTY_API_BASE =
-  "https://rematech-real-estate-redesign-2.onrender.com";
+  "http://localhost:8000"; // Replace with your backend URL
 const menuButton = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
 const closeButton = document.getElementById('closeBtn');

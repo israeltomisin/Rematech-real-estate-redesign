@@ -35,32 +35,46 @@ const sessionStore = new PgSessionStore({
 });
 
 // Middleware
+// Trust Render's proxy in production
 if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
 }
 
-app.use(cors({
-  origin: true,
-  credentials: true,
-}));
+// Allow requests from the deployed frontend
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      const isLocalOrigin =
+        typeof origin === "string" &&
+        /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+      const isDeployedOrigin =
+        origin === "https://rematech-real-estate-redesign-stati.vercel.app";
+
+      callback(null, !origin || isLocalOrigin || isDeployedOrigin);
+    },
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-  name: "rematech.sid",
-  secret: process.env.SESSION_SECRET,
-  store: sessionStore,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 1000 * 60 * 60 * 2,
-  },
-}));
-
+// PostgreSQL-backed admin sessions
+app.use(
+  session({
+    name: "rematech.sid",
+    secret: process.env.SESSION_SECRET,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 1000 * 60 * 60 * 2,
+    },
+  })
+);
 // Email transporter
 const emailTransporter = nodemailer.createTransport({
   service: "gmail",
@@ -78,12 +92,14 @@ const emailTransporter = nodemailer.createTransport({
 emailTransporter.verify()
   .then(() => {
     console.log("Gmail SMTP connection verified successfully");
+    console.log("SMTP Port:", emailTransporter.options.port || "default");
   })
   .catch((error) => {
     console.error("Gmail SMTP verification failed:", error.code, error.message);
   });
 // Serve frontend files
-app.use("/", express.static("static"));
+const staticDirectory = fileURLToPath(new URL("../static", import.meta.url));
+app.use("/", express.static(staticDirectory));
 
 // Send contact email
 router.post("/send-email", async (req, res) => {

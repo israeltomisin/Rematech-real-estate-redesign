@@ -1,3 +1,10 @@
+
+const REMATECH_API_BASE =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
+    ? `${window.location.protocol}//${window.location.hostname}:8000`
+    : "https://rematech-real-estate-redesign-2.onrender.com";
+
 const dashboardMessage = document.getElementById("dashboardMessage");
 const logoutButton = document.getElementById("logoutButton");
 const viewPropertiesButton = document.getElementById("viewPropertiesButton");
@@ -14,28 +21,52 @@ const cancelPropertyButton = document.getElementById("cancelPropertyButton");
 
 let editingPropertyId = null;
 
+// API HELPER
+
+async function apiRequest(path, options = {}) {
+  const response = await fetch(`${REMATECH_API_BASE}${path}`, {
+    ...options,
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
+      ...options.headers,
+    },
+  });
+
+  const result = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      result.message || `Request failed (${response.status}).`
+    );
+  }
+
+  return result;
+}
+
 // ADMIN SESSION
 
 async function checkAdminSession() {
   try {
-    const response = await fetch(`${REMATECH_API_BASE}/api/admin/me`, {
-      credentials: "include",
-    });
+    const result = await apiRequest("/api/admin/me");
 
-    if (!response.ok) {
-      window.location.replace("/admin/admin.html");
+    if (!result.admin) {
+      window.location.replace("admin.html");
       return false;
     }
-
-    const result = await response.json();
 
     dashboardMessage.textContent =
       `Logged in as ${result.admin.username}. Your admin session is active.`;
 
     return true;
-  } catch {
+  } catch (error) {
+    console.error("Session verification failed:", error);
+
     dashboardMessage.textContent =
-      "Unable to verify your session. Please refresh the page.";
+      "Your session could not be verified. Please log in again.";
+
+    window.location.replace("admin.html");
     return false;
   }
 }
@@ -58,15 +89,25 @@ function showPropertyForm(property = null) {
   propertyFormMessage.textContent = "";
 
   if (property) {
-    propertyForm.elements.title.value = property.title || "";
-    propertyForm.elements.property_type.value =
-      property.property_type || "";
-    propertyForm.elements.location.value = property.location || "";
-    propertyForm.elements.price.value = property.price ?? "";
-    propertyForm.elements.image_url.value = property.image_url || "";
-    propertyForm.elements.description.value =
+    propertyForm.elements.namedItem("title").value =
+      property.title || "";
+
+    propertyForm.elements.namedItem("property_type").value =
+      (property.property_type || "").toLowerCase();
+
+    propertyForm.elements.namedItem("location").value =
+      property.location || "";
+
+    propertyForm.elements.namedItem("price").value =
+      property.price ?? "";
+
+    propertyForm.elements.namedItem("image_url").value =
+      property.image_url || "";
+
+    propertyForm.elements.namedItem("description").value =
       property.description || "";
-    propertyForm.elements.status.value =
+
+    propertyForm.elements.namedItem("status").value =
       property.status || "available";
   }
 
@@ -85,7 +126,7 @@ function hidePropertyForm() {
   editingPropertyId = null;
 }
 
-// CREATE PROPERTY DETAIL ROW
+// PROPERTY INFORMATION ROW
 
 function createPropertyInfo(label, value, extraClass = "") {
   const row = document.createElement("div");
@@ -112,16 +153,10 @@ async function loadProperties() {
   propertiesList.replaceChildren();
 
   try {
-    const response = await fetch("/api/properties", {
-      credentials: "same-origin",
-    });
-
-    if (!response.ok) {
-      throw new Error("Could not load properties.");
-    }
-
-    const result = await response.json();
-    const properties = result.properties || [];
+    const result = await apiRequest("/api/properties");
+    const properties = Array.isArray(result)
+      ? result
+      : result.properties || [];
 
     if (properties.length === 0) {
       propertiesMessage.textContent =
@@ -136,7 +171,8 @@ async function loadProperties() {
       const card = document.createElement("article");
       card.className = "property-card";
 
-      // Property image or placeholder
+      // PROPERTY IMAGE
+
       const imageArea = document.createElement("div");
       imageArea.className = "property-image-area";
 
@@ -146,29 +182,29 @@ async function loadProperties() {
         image.className = "property-image";
         image.alt = property.title || "Property image";
         image.loading = "lazy";
-        imageArea.appendChild(image);
 
         image.addEventListener("error", () => {
           image.remove();
           imageArea.classList.add("property-image-placeholder");
-          imageArea.textContent = "⌂  REMATECH PROPERTIES";
+          imageArea.textContent = "⌂ REMATECH PROPERTIES";
         });
 
         image.src = property.image_url;
+        imageArea.appendChild(image);
       } else {
         imageArea.classList.add("property-image-placeholder");
-        imageArea.textContent = "⌂  REMATECH PROPERTIES";
+        imageArea.textContent = "⌂ REMATECH PROPERTIES";
       }
 
       card.appendChild(imageArea);
 
-      // Property details
+      // PROPERTY DETAILS
+
       const details = document.createElement("div");
       details.className = "property-details";
 
       const title = document.createElement("h3");
       title.textContent = property.title || "Untitled Property";
-
       details.appendChild(title);
 
       details.appendChild(
@@ -187,28 +223,25 @@ async function loadProperties() {
 
       const numericPrice = Number(property.price);
 
-      const formattedPrice = Number.isFinite(numericPrice)
-        ? `₦${numericPrice.toLocaleString("en-NG", {
-            maximumFractionDigits: 2,
-          })}`
-        : "Not specified";
+      const formattedPrice =
+        property.price !== null &&
+        property.price !== undefined &&
+        String(property.price).trim() !== "" &&
+        Number.isFinite(numericPrice)
+          ? `₦${numericPrice.toLocaleString("en-NG", {
+              maximumFractionDigits: 2,
+            })}`
+          : "Price on request";
 
       details.appendChild(
         createPropertyInfo("Price", formattedPrice, "property-price")
       );
 
-      // Status badge
+      // STATUS
+
       const statusValue = String(
         property.status || "available"
       ).toLowerCase();
-
-      const statusBadge = document.createElement("span");
-      statusBadge.className = "property-status";
-      statusBadge.textContent = statusValue;
-
-      if (["sold", "rented", "unavailable"].includes(statusValue)) {
-        statusBadge.classList.add(`status-${statusValue}`);
-      }
 
       const statusRow = document.createElement("div");
       statusRow.className = "property-info";
@@ -217,19 +250,29 @@ async function loadProperties() {
       statusLabel.className = "property-label";
       statusLabel.textContent = "Status";
 
+      const statusBadge = document.createElement("span");
+      statusBadge.className = "property-status";
+      statusBadge.textContent = statusValue;
+
+      if (
+        ["sold", "rented", "unavailable"].includes(statusValue)
+      ) {
+        statusBadge.classList.add(`status-${statusValue}`);
+      }
+
       statusRow.append(statusLabel, statusBadge);
       details.appendChild(statusRow);
-
       card.appendChild(details);
 
-      // Action buttons
+      // ACTION BUTTONS
+
       const actions = document.createElement("div");
       actions.className = "property-actions";
 
       const editButton = document.createElement("button");
       editButton.type = "button";
       editButton.className = "edit-property";
-      editButton.textContent = "✎  Edit";
+      editButton.textContent = "✎ Edit";
 
       editButton.addEventListener("click", () => {
         showPropertyForm(property);
@@ -238,7 +281,7 @@ async function loadProperties() {
       const deleteButton = document.createElement("button");
       deleteButton.type = "button";
       deleteButton.className = "delete-property";
-      deleteButton.textContent = "▤  Delete";
+      deleteButton.textContent = "Delete";
 
       deleteButton.addEventListener("click", () => {
         deleteProperty(property);
@@ -249,9 +292,11 @@ async function loadProperties() {
 
       propertiesList.appendChild(card);
     }
-  } catch {
+  } catch (error) {
+    console.error("Loading properties failed:", error);
+
     propertiesMessage.textContent =
-      "Unable to load properties. Please try again.";
+      error.message || "Unable to load properties. Please try again.";
   }
 }
 
@@ -265,33 +310,24 @@ async function deleteProperty(property) {
   if (!confirmed) return;
 
   try {
-    const response = await fetch(
+    const result = await apiRequest(
       `/api/admin/properties/${encodeURIComponent(property.id)}`,
-      {
-        method: "DELETE",
-        credentials: "same-origin",
-      }
+      { method: "DELETE" }
     );
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        result.message || "Could not delete property."
-      );
-    }
 
     await loadProperties();
 
     propertiesMessage.textContent =
       result.message || "Property deleted successfully.";
   } catch (error) {
+    console.error("Deleting property failed:", error);
+
     propertiesMessage.textContent =
-      error.message || "Unable to delete property. Please try again.";
+      error.message || "Unable to delete property.";
   }
 }
 
-// SAVE NEW OR UPDATED PROPERTY
+// CREATE OR UPDATE PROPERTY
 
 propertyForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -301,13 +337,15 @@ propertyForm.addEventListener("submit", async (event) => {
   const formData = new FormData(propertyForm);
 
   const propertyData = {
-    title: formData.get("title").trim(),
-    property_type: formData.get("property_type").trim(),
-    location: formData.get("location").trim(),
+    title: String(formData.get("title") || "").trim(),
+    property_type: String(
+      formData.get("property_type") || ""
+    ).trim(),
+    location: String(formData.get("location") || "").trim(),
     price: formData.get("price"),
-    image_url: formData.get("image_url").trim(),
-    description: formData.get("description").trim(),
-    status: formData.get("status"),
+    image_url: String(formData.get("image_url") || "").trim(),
+    description: String(formData.get("description") || "").trim(),
+    status: formData.get("status") || "available",
   };
 
   const isEditing = editingPropertyId !== null;
@@ -316,27 +354,14 @@ propertyForm.addEventListener("submit", async (event) => {
   propertyFormMessage.textContent = "Saving property...";
 
   try {
-    const response = await fetch(
-      isEditing
-        ? `/api/admin/properties/${encodeURIComponent(editingPropertyId)}`
-        : "/api/admin/properties",
-      {
-        method: isEditing ? "PUT" : "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(propertyData),
-      }
-    );
+    const path = isEditing
+      ? `/api/admin/properties/${encodeURIComponent(editingPropertyId)}`
+      : "/api/admin/properties";
 
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        result.message || "Could not save property."
-      );
-    }
+    const result = await apiRequest(path, {
+      method: isEditing ? "PUT" : "POST",
+      body: JSON.stringify(propertyData),
+    });
 
     hidePropertyForm();
     await loadProperties();
@@ -347,6 +372,8 @@ propertyForm.addEventListener("submit", async (event) => {
         ? "Property updated successfully."
         : "Property added successfully.");
   } catch (error) {
+    console.error("Saving property failed:", error);
+
     propertyFormMessage.textContent =
       error.message || "Unable to save property. Please try again.";
   } finally {
@@ -370,23 +397,30 @@ logoutButton.addEventListener("click", async () => {
   logoutButton.disabled = true;
 
   try {
-    const response = await fetch("/api/admin/logout", {
+    await apiRequest("/api/admin/logout", {
       method: "POST",
-      credentials: "same-origin",
     });
 
-    if (!response.ok) {
-      throw new Error("Logout failed.");
-    }
+    window.location.replace("admin.html");
+  } catch (error) {
+    console.error("Logout failed:", error);
 
-    window.location.replace("/admin/admin.html");
-  } catch {
     dashboardMessage.textContent =
-      "Could not log out. Please try again.";
+      error.message || "Could not log out. Please try again.";
 
     logoutButton.disabled = false;
   }
 });
 
-// Start by checking the admin session
-checkAdminSession();
+// INITIALIZE DASHBOARD
+
+async function initializeDashboard() {
+  const authenticated = await checkAdminSession();
+
+  if (!authenticated) return;
+
+  // Load the property listings after session verification.
+  await loadProperties();
+}
+
+initializeDashboard();
