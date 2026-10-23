@@ -1,4 +1,5 @@
-const VIEWPROPERTY_API_BASE = "https://rematech-real-estate-redesign-2.onrender.com";
+const VIEWPROPERTY_API_BASE =
+  "https://rematech-real-estate-redesign-2.onrender.com";
 const menuButton = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
 const closeButton = document.getElementById('closeBtn');
